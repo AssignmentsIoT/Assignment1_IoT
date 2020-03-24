@@ -1,14 +1,14 @@
-var mqtt = require('mqtt');                 //Library required to use MQTT protocol
+var mqtt = require('mqtt');                                                         //Library required to use MQTT protocol
 
-const environmentalStation_ID = "ES-1";
+const environmentalStation_ID = "b7303350-6d1d-11ea-8e0a-7d0ef2a682d3-1";
 
-const thingsboardHost = "demo.thingsboard.io";          //Server of ThingsBoard 
+const thingsboardHost = "demo.thingsboard.io";                                      //Server of ThingsBoard 
 
-const accessToken_temperature = "LuzNyU3GMUx5wjOGgRsK";         //Access token of the temperature sensor we're simulating 
-const accessToken_humidity = "AO0xdeod7Rb9iG4PWWRf";            //Access token of the humidity sensor we're simulating
-const accessToken_windDirection = "1LX2hYd7jFJzMgnIiCtv";       //Access token of the wind direction sensor sensor we're simulating
-const accessToken_windIntensity = "yJI4iC83pIAj6zCGNaVT";       //Access token of the wind intensity sensor sensor we're simulating
-const accessToken_rainHeight = "5l4srhQKSd7SHsnL2DhK";          //Access token of the rain height sensor sensor we're simulating
+const accessToken_temperature = "LuzNyU3GMUx5wjOGgRsK";                             //Access token of the temperature sensor we're simulating 
+const accessToken_humidity = "AO0xdeod7Rb9iG4PWWRf";                                //Access token of the humidity sensor we're simulating
+const accessToken_windDirection = "1LX2hYd7jFJzMgnIiCtv";                           //Access token of the wind direction sensor sensor we're simulating
+const accessToken_windIntensity = "yJI4iC83pIAj6zCGNaVT";                           //Access token of the wind intensity sensor sensor we're simulating
+const accessToken_rainHeight = "5l4srhQKSd7SHsnL2DhK";                              //Access token of the rain height sensor sensor we're simulating
 
 const minTemperature = - 50;        // Celsius
 const maxTemperature = 50;
@@ -22,7 +22,7 @@ const maxWindDirection = 360;
 const minWindIntensity = 0;         // m/s
 const maxWindIntensity = 100;
 
-const minRainHeight = 0;            // nm/h
+const minRainHeight = 0;            // mm/h
 const maxRainHeight = 50;
 
 //Initialization of data with random vaue
@@ -82,8 +82,8 @@ client_rainHeight.on('connect', function(){
 
 //Initializes data with random values at the beginning
 function dataInitialization(min, max){
-    var Value = min + (max - min) * Math.random();
-    return Value;
+    var value = min + (max - min) * Math.random();
+    return value;
 }
 
 //Sends the data associated to a device (environmental station ID and latest telemetry) through MQTT channel
@@ -93,7 +93,7 @@ function sendData(deviceType, data, client, min, max){
     client.publish('v1/devices/me/attributes', JSON.stringify({"Environmental Station ID":environmentalStation_ID}));
     //Schedules telemetry data upload once every 10 seconds
     console.log('Uploading %s data once every 10 seconds...', deviceType);
-    setInterval(publishTelemetry, 10000, data, client, min, max);
+    setInterval(publishTelemetry, 3000, data, client, min, max);
 }
 
 //Uploads telemetry data using 'v1/devices/me/telemetry' MQTT topic
@@ -104,11 +104,11 @@ function publishTelemetry(data, client, min, max){
     console.log('Things published');
 }
 
-//Generates new random Value that is within 3% range from previous Value
+//Generates new random value that is within 3% range from previous value
 function getNextValue(prevValue, min, max) {
-    var Value = prevValue + ((max - min) * (Math.random() - 0.5)) * 0.03;
-    Value = Math.max(min, Math.min(max, Value));
-    return Math.round(Value * 10) / 10;
+    var value = prevValue + ((max - min) * (Math.random() - 0.5)) * 0.03;
+    value = Math.max(min, Math.min(max, value));
+    return Math.round(value * 10) / 10;
 }
 
 //Catches ctrl+c event
